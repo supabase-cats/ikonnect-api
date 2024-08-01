@@ -9,7 +9,7 @@ export default function ListPage() {
   const naviagte = useNavigate();
 
   return (
-    <main className="m-auto flex max-w-[1200px] flex-col gap-10 px-10 pb-20">
+    <main className="m-auto flex max-w-[1200px] flex-col gap-10 px-10 pb-20 pt-1">
       <MyCredit />
       <section>
         <div className="flex items-center justify-between">
@@ -28,9 +28,10 @@ export default function ListPage() {
           </Toggle>
         </div>
         <div className="mt-4 flex">
-          <Swiper>
-            {Array.from({ length: 7 }).map(() => (
+          <Swiper size="large">
+            {Array.from({ length: 7 }).map((_, index) => (
               <SponsorCard
+                key={index}
                 sponsor={{
                   image: 'https://github.com/shadcn.png',
                   title: '태연의 커피차',
