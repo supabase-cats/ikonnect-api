@@ -1,12 +1,27 @@
+import { getDonations } from '@/api/donation';
 import MyCredit from '@/components/MyCredit';
 import SponsorCard from '@/components/SponsorCard';
 import Swiper from '@/components/Swiper';
 import Toggle from '@/components/Toggle';
 import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+type Donation = Awaited<ReturnType<typeof getDonations>>[number];
 
 export default function ListPage() {
   const naviagte = useNavigate();
+
+  const [donations, setDonations] = useState<Donation[]>([]);
+
+  useEffect(() => {
+    const fetchDonations = async () => {
+      const data = await getDonations();
+      setDonations(data);
+    };
+
+    fetchDonations();
+  }, []);
 
   return (
     <main className="m-auto flex max-w-[1200px] flex-col gap-10 px-10 pb-20 pt-1">
@@ -29,15 +44,15 @@ export default function ListPage() {
         </div>
         <div className="mt-4 flex">
           <Swiper size="large">
-            {Array.from({ length: 7 }).map((_, index) => (
+            {donations.map((donation) => (
               <SponsorCard
-                key={index}
+                key={donation.id}
                 sponsor={{
-                  image: 'https://github.com/shadcn.png',
-                  title: '태연의 커피차',
-                  deadline: new Date(2024, 8, 2),
-                  totalCredit: 5000,
-                  donatedCredit: 1000,
+                  image: donation.image,
+                  title: donation.title,
+                  deadline: new Date(donation.deadline),
+                  totalCredit: donation.targetAmount,
+                  donatedCredit: donation.savedAmount,
                 }}
               />
             ))}
