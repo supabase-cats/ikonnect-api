@@ -1,11 +1,26 @@
+import { getIdols } from '@/api/idol';
 import DatePicker from '@/components/DatePicker';
 import IdolAvatar from '@/components/IdolAvatar';
 import Swiper from '@/components/Swiper';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useEffect, useState } from 'react';
+
+type Idol = Awaited<ReturnType<typeof getIdols>>[number];
 
 export default function AddSponsorPage() {
+  const [idols, setIdols] = useState<Idol[]>([]);
+
+  useEffect(() => {
+    const fetchIdols = async () => {
+      const data = await getIdols();
+      setIdols(data);
+    };
+
+    fetchIdols();
+  }, []);
+
   return (
     <main className="m-auto flex max-w-[1200px] flex-col px-10 pb-20 pt-1">
       <div className="flex items-center justify-between">
@@ -17,8 +32,14 @@ export default function AddSponsorPage() {
       </div>
       <div className="mt-8">
         <Swiper>
-          {Array.from({ length: 15 }).map((_, index) => (
-            <IdolAvatar key={index} />
+          {idols.map((idol) => (
+            <div
+              key={idol.id}
+              className="flex select-none flex-col items-center justify-start"
+            >
+              <IdolAvatar image={idol.image} alt={idol.name} />
+              <p className="mt-2">{idol.name}</p>
+            </div>
           ))}
         </Swiper>
       </div>
